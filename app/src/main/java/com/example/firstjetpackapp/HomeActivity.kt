@@ -8,11 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu // 1. Import Menu Icon
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,29 +23,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import com.example.firstjetpackapp.ui.theme.FirstJetpackAppTheme
 import kotlinx.coroutines.launch
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. Unpack the Intent to get the username.
+        // If it's missing for some reason, we default to "User".
+        val loggedInUsername = intent.getStringExtra("EXTRA_USERNAME") ?: "User"
+
         enableEdgeToEdge()
         setContent {
             FirstJetpackAppTheme {
-                Scaffold(modifier = Modifier) { innerPadding ->
-                    HomeScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                // We no longer need the outer Scaffold here, the inner one is enough
+                HomeScreen(
+                    username = loggedInUsername // 2. Pass it to the Composable
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // 2. Opt-in for TopAppBar
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    username: String, // 3. Accept the username as a parameter
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -78,9 +85,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(
-                            "Jetpack App",
-                        )
+                        Text("Jetpack App")
                     },
                     navigationIcon = {
                         IconButton(onClick = {
@@ -94,29 +99,24 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     }
                 )
             }
-        ) {
-            padding ->
+        ) { padding ->
+            // I combined your two Columns into one clean Column so the text and button stack nicely!
             Column(
                 modifier = modifier
                     .padding(padding)
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.Center, // Centers everything vertically
+                horizontalAlignment = Alignment.CenterHorizontally // Centers everything horizontally
             ) {
+                // 4. Display the dynamic username!
                 Text(
-                    text = "Welcome To\nHome Screen",
+                    text = "Welcome\n$username",
                     style = MaterialTheme.typography.headlineLarge,
                     textAlign = TextAlign.Center
                 )
-            }
-            Column(
-                modifier = modifier
-                    .padding(padding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            )
-                {
+
+                Spacer(modifier = Modifier.padding(16.dp)) // Adds some breathing room
+
                 Button(
                     onClick = {
                         val intent = Intent(context, LoginActivity::class.java)
@@ -135,6 +135,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 @Composable
 fun HomePreview() {
     FirstJetpackAppTheme {
-        HomeScreen()
+        // We pass a dummy name here just so the preview looks good
+        HomeScreen(username = "Tarun")
     }
 }
