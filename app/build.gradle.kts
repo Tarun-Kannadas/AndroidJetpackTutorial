@@ -2,13 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.devtools.ksp) // Apply KSP here
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.example.firstjetpackapp"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36 // Just set it directly to the integer
 
     defaultConfig {
         applicationId = "com.example.firstjetpackapp"
@@ -36,6 +36,9 @@ android {
     buildFeatures {
         compose = true
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -57,4 +60,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx) // This gives you Coroutines/Flow support
     ksp(libs.androidx.room.compiler)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

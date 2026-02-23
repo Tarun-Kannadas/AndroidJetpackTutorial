@@ -24,8 +24,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.firstjetpackapp.ui.theme.FirstJetpackAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +112,7 @@ fun HomeScreen(
             ) {
                 // 4. Display the dynamic username!
                 Text(
-                    text = "Welcome\n$username",
+                    text = "Welcome $username",
                     style = MaterialTheme.typography.headlineLarge,
                     textAlign = TextAlign.Center
                 )

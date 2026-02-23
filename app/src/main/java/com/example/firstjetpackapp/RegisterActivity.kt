@@ -26,15 +26,21 @@ import com.example.firstjetpackapp.repository.AuthRepository
 import com.example.firstjetpackapp.ui.theme.FirstJetpackAppTheme
 import com.example.firstjetpackapp.viewmodel.AuthViewModel
 import com.example.firstjetpackapp.viewmodel.AuthViewModelFactory
+import com.example.firstjetpackapp.viewmodel.AuthViewModelHilt
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint // 1. Tell Hilt to inject into this Activity
 class RegisterActivity : ComponentActivity() {
 
-    // 1. Initialize DB, Repo, and ViewModel
-    private val db by lazy { AppDatabase.getDatabase(applicationContext) }
-    private val repo by lazy { AuthRepository(db.userDao()) }
-    private val viewmodel: AuthViewModel by viewModels {
-        AuthViewModelFactory(repo)
-    }
+//    // 1. Initialize DB, Repo, and ViewModel
+//    private val db by lazy { AppDatabase.getDatabase(applicationContext) }
+//    private val repo by lazy { AuthRepository(db.userDao()) }
+//    private val viewmodel: AuthViewModel by viewModels {
+//        AuthViewModelFactory(repo)
+//    }
+
+    // 2. Hilt Magic! No factory, no DB, no repo needed. Just this one line:
+    private val viewmodel: AuthViewModelHilt by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +49,7 @@ class RegisterActivity : ComponentActivity() {
             FirstJetpackAppTheme {
 
                 // 2. Observe the registration success state
-                val isRegistrationSuccess by viewmodel.registrationSuccess
+                val isRegistrationSuccess by viewmodel.registrationSuccessHilt
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     RegisterScreen(
@@ -53,7 +59,7 @@ class RegisterActivity : ComponentActivity() {
                         // FIX: Now accepts all 4 strings from the UI
                         onRegisterAttempt = { username, password, phoneNumber, email ->
                             // 3. Ask ViewModel to save the user to the Room DB
-                            viewmodel.registerUser(username, password, phoneNumber, email)
+                            viewmodel.registerUserHilt(username, password, phoneNumber, email)
                         },
                         onNavigateToLogin = {
                             // 4. Handle navigation up here in the Activity

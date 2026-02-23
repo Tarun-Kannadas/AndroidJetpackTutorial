@@ -24,17 +24,23 @@ import com.example.firstjetpackapp.repository.AuthRepository
 import com.example.firstjetpackapp.ui.theme.FirstJetpackAppTheme
 import com.example.firstjetpackapp.viewmodel.AuthViewModel
 import com.example.firstjetpackapp.viewmodel.AuthViewModelFactory
+import com.example.firstjetpackapp.viewmodel.AuthViewModelHilt
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
     // 1. Initialize DB and Repository
-    private val db by lazy { AppDatabase.getDatabase(applicationContext) }
-    private val repo by lazy { AuthRepository(db.userDao()) }
+//    private val db by lazy { AppDatabase.getDatabase(applicationContext) }
+//    private val repo by lazy { AuthRepository(db.userDao()) }
+//
+//    // 2. Initialize ViewModel
+//    private val viewmodel: AuthViewModel by viewModels {
+//        AuthViewModelFactory(repo)
+//    }
 
-    // 2. Initialize ViewModel
-    private val viewmodel: AuthViewModel by viewModels {
-        AuthViewModelFactory(repo)
-    }
+    // 2. Hilt provides the fully built ViewModel automatically!
+    private val viewmodel: AuthViewModelHilt by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +49,7 @@ class LoginActivity : ComponentActivity() {
             FirstJetpackAppTheme {
 
                 // 3. Observe the login state from the ViewModel
-                val isLoginSuccess by viewmodel.loginSuccess
+                val isLoginSuccess by viewmodel.loginSuccessHilt
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LoginScreen(
@@ -51,7 +57,7 @@ class LoginActivity : ComponentActivity() {
                         isLoginSuccess = isLoginSuccess, // Pass the state down
                         onLoginAttempt = { username, password ->
                             // Tell the ViewModel to attempt login
-                            viewmodel.loginUser(username, password)
+                            viewmodel.loginUserHilt(username, password)
                         },
                         onLoginSuccessNavigate = { username ->
                             // This runs when isLoginSuccess becomes true
