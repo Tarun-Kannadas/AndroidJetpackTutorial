@@ -2,6 +2,8 @@ package com.example.firstjetpackapp.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firstjetpackapp.model.Users
@@ -16,23 +18,45 @@ import javax.inject.Inject
 class AuthViewModelHilt @Inject constructor(
     private val repository: AuthRepositoryHilt
 ): ViewModel() {
+//    private val _loginSuccess = mutableStateOf(false)
+//    val loginSuccessHilt : State<Boolean> = _loginSuccess
 
-    private val _loginSuccess = mutableStateOf(false)
-    val loginSuccessHilt : State<Boolean> = _loginSuccess
+//    private val _registrationSuccess = mutableStateOf(false)
+//    val registrationSuccessHilt:State<Boolean> = _registrationSuccess
+    private val _loginSuccess = MutableLiveData<Boolean>()
+    val loginSuccessHilt: LiveData<Boolean> = _loginSuccess
 
-    private val _registrationSuccess = mutableStateOf(false)
-    val registrationSuccessHilt:State<Boolean> = _registrationSuccess
+    private val _registrationSuccess = MutableLiveData<Boolean>()
+    val registrationSuccessHilt: LiveData<Boolean> = _registrationSuccess
 
-    fun registerUserHilt(username: String, password: String, phnnumber: String, email: String) {
+//    fun registerUserHilt(username: String, password: String, phnnumber: String, email: String) {
+//        viewModelScope.launch {
+//            repository.registerUserHilt(Users(username = username, password = password, phnnumber = phnnumber, email = email))
+//            _registrationSuccess.value = true
+//        }
+//    }
+
+    fun registerUserHilt(username: String, password: String, phnnumber: String, email: String)
+    {
         viewModelScope.launch {
-            repository.registerUserHilt(Users(username = username, password = password, phnnumber = phnnumber, email = email))
-            _registrationSuccess.value = true
+            repository.registerUserHilt(
+                Users(username=username, password = password, phnnumber = phnnumber, email = email)
+            )
+            _registrationSuccess.postValue(true)
         }
     }
 
-    fun loginUserHilt(username: String, password: String) {
+//    fun loginUserHilt(username: String, password: String) {
+//        viewModelScope.launch {
+//            _loginSuccess.value = repository.loginUserHilt(username,password)
+//        }
+//    }
+
+    fun loginUserHilt(username: String, password: String)
+    {
         viewModelScope.launch {
-            _loginSuccess.value = repository.loginUserHilt(username,password)
+            val result = repository.loginUserHilt(username, password)
+            _loginSuccess.postValue(result)
         }
     }
 }

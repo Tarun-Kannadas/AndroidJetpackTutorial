@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,12 +50,13 @@ class RegisterActivity : ComponentActivity() {
             FirstJetpackAppTheme {
 
                 // 2. Observe the registration success state
-                val isRegistrationSuccess by viewmodel.registrationSuccessHilt
+                // val isRegistrationSuccess by viewmodel.registrationSuccessHilt
+                val isRegistrationSuccess by viewmodel.registrationSuccessHilt.observeAsState()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     RegisterScreen(
                         modifier = Modifier.padding(innerPadding),
-                        isRegistrationSuccess = isRegistrationSuccess,
+                        isRegistrationSuccess = isRegistrationSuccess == true,
 
                         // FIX: Now accepts all 4 strings from the UI
                         onRegisterAttempt = { username, password, phoneNumber, email ->

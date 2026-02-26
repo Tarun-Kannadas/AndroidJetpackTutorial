@@ -19,6 +19,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.livedata.observeAsState
 import com.example.firstjetpackapp.model.AppDatabase
 import com.example.firstjetpackapp.repository.AuthRepository
 import com.example.firstjetpackapp.ui.theme.FirstJetpackAppTheme
@@ -49,7 +52,9 @@ class LoginActivity : ComponentActivity() {
             FirstJetpackAppTheme {
 
                 // 3. Observe the login state from the ViewModel
-                val isLoginSuccess by viewmodel.loginSuccessHilt
+                // val isLoginSuccess by viewmodel.loginSuccessHilt
+
+                val isLoginSuccess by viewmodel.loginSuccessHilt.observeAsState(false)
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LoginScreen(
